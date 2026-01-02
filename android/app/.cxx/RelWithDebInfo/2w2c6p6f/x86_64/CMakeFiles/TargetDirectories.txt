@@ -1,0 +1,2 @@
+/Users/l360794/development/dart/network_tables_client/android/app/.cxx/RelWithDebInfo/2w2c6p6f/x86_64/CMakeFiles/edit_cache.dir
+/Users/l360794/development/dart/network_tables_client/android/app/.cxx/RelWithDebInfo/2w2c6p6f/x86_64/CMakeFiles/rebuild_cache.dir

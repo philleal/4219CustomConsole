@@ -1,0 +1,5 @@
+{
+    "robot_ip":"10.42.19.2",
+    "limelight_ip":"10.42.19.11",
+    "enable_limelight":false
+}

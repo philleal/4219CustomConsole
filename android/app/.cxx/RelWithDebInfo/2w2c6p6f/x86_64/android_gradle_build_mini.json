@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/l360794/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/l360794/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/l360794/development/dart/network_tables_client/android/app/.cxx/RelWithDebInfo/2w2c6p6f/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/l360794/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/l360794/development/dart/network_tables_client/android/app/.cxx/RelWithDebInfo/2w2c6p6f/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

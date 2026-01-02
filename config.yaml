@@ -1,0 +1,29 @@
+# RoboRio Configs
+robot_ip: "10.42.19.2"
+#robot_ip: "127.0.0.1"
+is_simulator: false
+
+# FMS Info
+# match_time_path: "/AdvantageKit/DriverStation/MatchTime"
+
+# Autonomous
+# autonomous_path: "/AdvantageKit/DriverStation/Autonomous"
+
+# Limelight configs
+#limelight_ip: "10.42.19.200"
+limelight_ip: "limelight.local"
+limelight_port: 5800
+limelight_path: ""
+enable_limelight: true
+
+# Photonvision configs
+enable_photonvision: true
+photonvision_ip: "" # need to add this
+photonvision_port: 8080 # need to add this
+photonvision_path1: "" # need to add this
+#photonvision_camera1_url: "http://photonvision.local:1182/?action=stream"
+photonvision_camera1_url: "http://10.42.19.201:1182/?action=stream"
+photonvision_camera2_url: "http://photonvision.local:1184/?action=stream"
+
+# Field
+enable_field: false
