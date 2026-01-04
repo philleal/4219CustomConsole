@@ -1,7 +1,7 @@
 # RoboRio Configs
-robot_ip: "10.42.19.2"
-#robot_ip: "127.0.0.1"
-is_simulator: false
+#robot_ip: "10.42.19.2"
+robot_ip: "127.0.0.1"
+is_simulator: true
 
 # FMS Info
 # match_time_path: "/AdvantageKit/DriverStation/MatchTime"

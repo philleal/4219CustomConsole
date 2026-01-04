@@ -21,6 +21,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:messagepack/messagepack.dart';
 import 'dart:math';
+import 'dart:io';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'Flutter Demo',
       //theme: ThemeData.dark(),
@@ -189,7 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ScrollController scrollController = ScrollController();
 
   TextEditingController textEditingControllerTime =
-      TextEditingController(text: "Time");
+      TextEditingController(text: "0");
 
   // Create a [Player] to control playback.
   late final player = Player();
@@ -253,6 +255,8 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController textEditingControllerTurretI = TextEditingController();
   TextEditingController textEditingControllerTurretD = TextEditingController();
 
+  List<InternetAddress> _addresses = [];
+
   /*void setRobotState() {
     if (_isAuto == true) {
       _mode = Mode.auto;
@@ -267,6 +271,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }*/
 
   void connect() async {
+    _addresses = await getLocalHostName();
     String response = await rootBundle.loadString('config.yaml');
     var yaml = await loadYaml(response);
 
@@ -739,7 +744,12 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }, onError: (errorString) {
       dev.log(errorString);
-    });
+    }, onDisconnected: () {
+      dev.log("Disconnected called");
+      setState(() {
+        _connected = false;
+      });
+    },);
 
     _network_tables41.connect();
   }
@@ -757,8 +767,13 @@ class _MyHomePageState extends State<MyHomePage> {
     connect();
   }
 
+  Future<List<InternetAddress>> getLocalHostName() async {
+    return await InternetAddress.lookup(Platform.localHostname);
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       theme: Theme.of(context),
       home: DefaultTabController(
@@ -782,8 +797,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             title: Text(
               (_alliance == Alliance.red)
-                  ? "${_config.robotIPAddress} Red Alliance Station ${_stationNumber.round()} connected: $_connected enabled: $_enabled"
-                  : "${_config.robotIPAddress} Blue Alliance Station ${_stationNumber.round()} connected: $_connected enabled: $_enabled",
+                  ? "${_config.robotIPAddress} Red Alliance Station ${_stationNumber.round()} connected: $_connected enabled: $_enabled my address: ${_addresses.isNotEmpty ? _addresses[3].address.toString() : 'No address'}"
+                  : "${_config.robotIPAddress} Blue Alliance Station ${_stationNumber.round()} connected: $_connected enabled: $_enabled my address:${_addresses.isNotEmpty ? _addresses[3].address.toString() : 'No address'}",
               style: TextStyle(
                 color: (_alliance == Alliance.red) ? Colors.red : Colors.blue,
               ),
@@ -909,22 +924,28 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget timeWidget() {
-    return Container(
-      width: 200,
-      color: (int.parse(textEditingControllerTime.text) < 31)
-          ? Colors.red
-          : Colors.black,
-      child: TextField(
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.displayLarge,
-        readOnly: true,
-        showCursor: false,
-        decoration: const InputDecoration(
-          labelText: "Time",
-        ).applyDefaults(Theme.of(context).inputDecorationTheme),
-        controller: textEditingControllerTime,
-      ),
-    );
+    try {
+      return Container(
+        width: 200,
+        color: (int.parse(textEditingControllerTime.text) < 31)
+            ? Colors.red
+            : Colors.black,
+        child: TextField(
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.displayLarge,
+          readOnly: true,
+          showCursor: false,
+          decoration: const InputDecoration(
+            labelText: "Time",
+          ).applyDefaults(Theme.of(context).inputDecorationTheme),
+          controller: textEditingControllerTime,
+        ),
+      );
+    } catch (e) {
+      dev.log("problem with int.parse, it is ${textEditingControllerTime.text}");
+    }
+
+    return Container();
   }
 
   Widget robotStatusWidget() {
@@ -1092,7 +1113,7 @@ class _MyHomePageState extends State<MyHomePage> {
             //_networkTables.connectBot();
             connect();
           },
-          child: Text("Reconnect to ${_config.robotIPAddress}"),
+          child: (_addresses.isNotEmpty) ? Text("Reconnect to ${_config.robotIPAddress} my address is: ${_addresses[3].address.toString()}") : Text("Reconnect to ${_config.robotIPAddress}"),
         ),
       ),
     );

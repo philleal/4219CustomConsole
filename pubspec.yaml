@@ -32,7 +32,7 @@ dependencies:
   flutter:
     sdk: flutter
   network_tables:
-    path: ../network_tables
+    path: ../network_tables_dart
   flutter_mjpeg: 2.0.4
   
   media_kit: ^1.2.0 # Primary package.
