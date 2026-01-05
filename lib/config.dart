@@ -10,6 +10,10 @@ class Config {
   // Roborio properties
   String get robotIPAddress => _robotIPAddress;
 
+  set robotIPAddress(String ip) {
+    _robotIPAddress = ip;
+  }
+
   // Limelight
   String _limeLightIPAddress = "";
   bool _enableLimeLight = true;

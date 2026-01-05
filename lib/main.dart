@@ -1,27 +1,15 @@
-import 'dart:convert';
-import 'dart:ffi';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mjpeg/flutter_mjpeg.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:network_tables/entry.dart';
-import 'package:network_tables/network_tables.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 import 'package:network_tables/network_tables41.dart';
 import 'dart:developer' as dev;
 
-import 'package:network_tables/test.dart';
 import 'package:network_tables_client/config.dart';
 import 'package:network_tables_client/constants.dart';
 import 'package:yaml/yaml.dart';
-
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:web_socket_channel/status.dart' as status;
-import 'package:messagepack/messagepack.dart';
-import 'dart:math';
-import 'dart:io';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +25,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: 'Flutter Demo',
       //theme: ThemeData.dark(),
@@ -255,7 +242,9 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController textEditingControllerTurretI = TextEditingController();
   TextEditingController textEditingControllerTurretD = TextEditingController();
 
-  List<InternetAddress> _addresses = [];
+  NetworkInfo _networkInfo = NetworkInfo();
+  String _localAddress = "";
+  TextEditingController _textEditingControllerRobotIP = TextEditingController();
 
   /*void setRobotState() {
     if (_isAuto == true) {
@@ -271,13 +260,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }*/
 
   void connect() async {
-    _addresses = await getLocalHostName();
-    String response = await rootBundle.loadString('config.yaml');
-    var yaml = await loadYaml(response);
+    //_localAddress = await getLocalHostAddress();
+    // String response = await rootBundle.loadString('config.yaml');
+    // var yaml = await loadYaml(response);
 
-    setState(() {
-      _config = Config.fromYAML(yaml);
-    });
+    // setState(() {
+    //   _config = Config.fromYAML(yaml);
+    //   _textEditingControllerRobotIP.text = _config.robotIPAddress;
+    // });
 
     Map<String, String> publications = {
       networkTablesSelectAuto: "string",
@@ -313,266 +303,268 @@ class _MyHomePageState extends State<MyHomePage> {
     };
 
     _network_tables41 = Network_Tables41(
-        _config.robotIPAddress,
-        5810,
-        "4219",
-        [
-          networkTablesAutoOptionsPath,
-          networkTablesBatteryPath,
-          networkTablesAlliancePath,
-          networkTablesFMSAttached,
-          networkTablesDSAttached,
-          networkTablesMatchTimePath,
-          //_config.matchTimePath,
-          networkTablesEnabledPath,
-          networkTablesMatchNumberPath,
-          networkTablesStationNumberPath,
-          networkTablesEventNamePath,
-          networkTablesPDPTotalCurrent,
-          networkTablesPhotonVisionCameraPublisherProcessed,
-          networkTablesPhotonVisionCameraPublisherRaw,
-          networkTablesSelectAuto,
-          networkTablesActiveAuto,
-          fieldRobot,
-          networkTablesStationNumber,
-          networkTablesEnabled,
-          //ntPhotonVisionEstimator,
-          networkTablesPhotonVisionCam1HasTargetPath,
-          networkTablesLimeLightVideoPath,
-          networkTablesPhotonVisionCamera2PublisherProcessed,
-          networkTablesPhotonVisionEnableCam1,
-          networkTablesPhotonVisionEnableCam2,
-          shooterHasTarget,
-          robotStatus,
-          turningMotorsPIDP,
-          turningMotorsPIDI,
-          turningMotorsPIDD,
-          driveMotorsPIDP,
-          driveMotorsPIDI,
-          driveMotorsPIDD,
-          ntAutoDriveP,
-          ntAutoDriveI,
-          ntAutoDriveD,
-          ntAutoTurnP,
-          ntAutoTurnI,
-          ntAutoTurnD,
-          ntPhotonVisionCam1XOffset,
-          ntPhotonVisionCam1YOffset,
-          ntPhotonVisionCam1Height,
-          ntPhotonVisionCam1Rotation,
-          ntPhotonVisionCam2XOffset,
-          ntPhotonVisionCam2YOffset,
-          ntPhotonVisionCam2Height,
-          ntPhotonVisionCam2Rotation,
-          ntShooterP,
-          ntShooterI,
-          ntShooterD,
-          ntHoodP,
-          ntHoodI,
-          ntHoodD,
-        ],
-        publications, onConnected: () {
-      setState(() {
-        _connected = true;
-      });
-    }, onValueReceived: (name, value) {
-      //dev.log("onValueReceivedCalled name $name value $value");
+      _config.robotIPAddress,
+      5810,
+      "4219",
+      [
+        networkTablesAutoOptionsPath,
+        networkTablesBatteryPath,
+        networkTablesAlliancePath,
+        networkTablesFMSAttached,
+        networkTablesDSAttached,
+        networkTablesMatchTimePath,
+        //_config.matchTimePath,
+        networkTablesEnabledPath,
+        networkTablesMatchNumberPath,
+        networkTablesStationNumberPath,
+        networkTablesEventNamePath,
+        networkTablesPDPTotalCurrent,
+        networkTablesPhotonVisionCameraPublisherProcessed,
+        networkTablesPhotonVisionCameraPublisherRaw,
+        networkTablesSelectAuto,
+        networkTablesActiveAuto,
+        fieldRobot,
+        networkTablesStationNumber,
+        networkTablesEnabled,
+        //ntPhotonVisionEstimator,
+        networkTablesPhotonVisionCam1HasTargetPath,
+        networkTablesLimeLightVideoPath,
+        networkTablesPhotonVisionCamera2PublisherProcessed,
+        networkTablesPhotonVisionEnableCam1,
+        networkTablesPhotonVisionEnableCam2,
+        shooterHasTarget,
+        robotStatus,
+        turningMotorsPIDP,
+        turningMotorsPIDI,
+        turningMotorsPIDD,
+        driveMotorsPIDP,
+        driveMotorsPIDI,
+        driveMotorsPIDD,
+        ntAutoDriveP,
+        ntAutoDriveI,
+        ntAutoDriveD,
+        ntAutoTurnP,
+        ntAutoTurnI,
+        ntAutoTurnD,
+        ntPhotonVisionCam1XOffset,
+        ntPhotonVisionCam1YOffset,
+        ntPhotonVisionCam1Height,
+        ntPhotonVisionCam1Rotation,
+        ntPhotonVisionCam2XOffset,
+        ntPhotonVisionCam2YOffset,
+        ntPhotonVisionCam2Height,
+        ntPhotonVisionCam2Rotation,
+        ntShooterP,
+        ntShooterI,
+        ntShooterD,
+        ntHoodP,
+        ntHoodI,
+        ntHoodD,
+      ],
+      publications,
+      onConnected: () {
+        setState(() {
+          _connected = true;
+        });
+      },
+      onValueReceived: (name, value) {
+        //dev.log("onValueReceivedCalled name $name value $value");
 
-      switch (name) {
-        case networkTablesEnabled:
-          dev.log("networkTablesEnabled called $value");
-          setState(() {
-            _enabled = value;
-          });
+        switch (name) {
+          case networkTablesEnabled:
+            dev.log("networkTablesEnabled called $value");
+            setState(() {
+              _enabled = value;
+            });
 
-          break;
-        case networkTablesStationNumber:
-          dev.log("networkTablesStationNumber called $value");
-          break;
-        case networkTablesActiveAuto:
-          dev.log("networkTablesActiveAuto called $value");
-          break;
-        case networkTablesBatteryPath:
-          _batteryVoltage = value;
-          break;
-        case networkTablesSelectAuto:
-          dev.log("networkTablesSelectedAuto called ${value}");
-          setState(() {
-            _selectedAuto = value;
-          });
+            break;
+          case networkTablesStationNumber:
+            dev.log("networkTablesStationNumber called $value");
+            break;
+          case networkTablesActiveAuto:
+            dev.log("networkTablesActiveAuto called $value");
+            break;
+          case networkTablesBatteryPath:
+            _batteryVoltage = value;
+            break;
+          case networkTablesSelectAuto:
+            dev.log("networkTablesSelectedAuto called ${value}");
+            setState(() {
+              _selectedAuto = value;
+            });
 
-          break;
-        case networkTablesAlliancePath:
-          setState(() {
-            if (value) {
-              _alliance = Alliance.red;
-            } else {
-              _alliance = Alliance.blue;
+            break;
+          case networkTablesAlliancePath:
+            setState(() {
+              if (value) {
+                _alliance = Alliance.red;
+              } else {
+                _alliance = Alliance.blue;
+              }
+            });
+            break;
+          case networkTablesFMSAttached:
+            setState(() {
+              if (value) {
+                _fmsAttached = true;
+              } else {
+                _fmsAttached = false;
+              }
+            });
+            break;
+          case networkTablesDSAttached:
+            setState(() {
+              if (value) {
+                _dsAttached = true;
+              } else {
+                _dsAttached = false;
+              }
+            });
+            break;
+          case networkTablesAutoOptionsPath:
+            setState(() {
+              for (String auto in value) {
+                _autos.add(auto);
+              }
+            });
+            break;
+          case networkTablesMatchTimePath:
+            //case matchTime:
+            setState(() {
+              _matchTime = value;
+              textEditingControllerTime.text = "${_matchTime.round()}";
+            });
+            break;
+          case networkTablesStationNumberPath:
+            dev.log("networkTablesStationNumberPath is $value");
+            setState(() {
+              _stationNumber = value;
+            });
+            break;
+          case networkTablesPDPTotalCurrent:
+            setState(() {
+              totalPower = value;
+            });
+            break;
+          case networkTablesPhotonVisionCameraPublisherProcessed:
+            dev.log(
+                "networkTablesPhotonVisionCameraPublisherProcessed: ${value[0]}");
+
+            String val = value[0];
+
+            if (val.contains(".local") && val.contains(":1188")) {
+              val = val.replaceRange(val.indexOf("http"), val.indexOf(":1188"),
+                  "http://127.0.0.1");
+            } else if (val.contains(".local") && val.contains(":1184")) {
+              val = val.replaceRange(val.indexOf("http"), val.indexOf(":1184"),
+                  "http://127.0.0.1");
             }
-          });
-          break;
-        case networkTablesFMSAttached:
-          setState(() {
-            if (value) {
-              _fmsAttached = true;
-            } else {
-              _fmsAttached = false;
+
+            dev.log("-------------> $val");
+
+            setState(() {
+              //_cam1Processed = value[0].replaceFirst("mjpg:", "");
+              _cam1Processed = val.replaceFirst("mjpg:", "");
+            });
+            break;
+          case networkTablesPhotonVisionCamera2PublisherProcessed:
+            dev.log(
+                "networkTablesPhotonVisionCamera2PublisherProcessed: ${value[0]}");
+
+            String val = value[0];
+
+            if (val.contains(".local") && val.contains(":1188")) {
+              val = val.replaceRange(val.indexOf("http"), val.indexOf(":1188"),
+                  "http://127.0.0.1");
+            } else if (val.contains(".local") && val.contains(":1184")) {
+              val = val.replaceRange(val.indexOf("http"), val.indexOf(":1184"),
+                  "http://127.0.0.1");
             }
-          });
-          break;
-        case networkTablesDSAttached:
-          setState(() {
-            if (value) {
-              _dsAttached = true;
-            } else {
-              _dsAttached = false;
+
+            dev.log("-------------> $val");
+
+            setState(() {
+              //_cam1Processed = value[0].replaceFirst("mjpg:", "");
+              _cam2Processed = val.replaceFirst("mjpg:", "");
+            });
+            break;
+          case networkTablesPhotonVisionCameraPublisherRaw:
+            dev.log("networkTablesPhotonVisionCameraPublisherRaw: ${value[0]}");
+
+            String val = value[0];
+
+            if (val.contains(".local") && val.contains("1187")) {
+              val = val.replaceRange(val.indexOf("http"), val.indexOf(":1187"),
+                  "http://127.0.0.1");
+            } else if (val.contains(".local") && val.contains("1183")) {
+              val = val.replaceRange(val.indexOf("http"), val.indexOf(":1183"),
+                  "http://127.0.0.1");
             }
-          });
-          break;
-        case networkTablesAutoOptionsPath:
-          setState(() {
-            for (String auto in value) {
-              _autos.add(auto);
-            }
-          });
-          break;
-        case networkTablesMatchTimePath:
-          //case matchTime:
-          setState(() {
-            _matchTime = value;
-            textEditingControllerTime.text = "${_matchTime.round()}";
-          });
-          break;
-        case networkTablesStationNumberPath:
-          dev.log("networkTablesStationNumberPath is $value");
-          setState(() {
-            _stationNumber = value;
-          });
-          break;
-        case networkTablesPDPTotalCurrent:
-          setState(() {
-            totalPower = value;
-          });
-          break;
-        case networkTablesPhotonVisionCameraPublisherProcessed:
-          dev.log(
-              "networkTablesPhotonVisionCameraPublisherProcessed: ${value[0]}");
 
-          String val = value[0];
+            dev.log("-------------> $val");
 
-          if (val.contains(".local") && val.contains(":1188")) {
-            val = val.replaceRange(
-                val.indexOf("http"), val.indexOf(":1188"), "http://127.0.0.1");
-          } else if (val.contains(".local") && val.contains(":1184")) {
-            val = val.replaceRange(
-                val.indexOf("http"), val.indexOf(":1184"), "http://127.0.0.1");
-          }
+            setState(() {
+              //_cam1Raw = value[0].replaceFirst("mjpg:", "");
+              _cam1Raw = val.replaceFirst("mjpg:", "");
+            });
+            break;
+          case turningMotorsPIDP:
+            //dev.log("received the value for turningMotorsPIDP $value");
+            setState(() {
+              turningMotorPIDP = value;
+              textEditingControllerTurnP.text = "$turningMotorPIDP";
+            });
+            break;
+          case turningMotorsPIDI:
+            //dev.log("received the value for turningMotorsPIDI $value");
+            setState(() {
+              turningMotorPIDI = value;
+              textEditingControllerTurnI.text = "$value";
+            });
+            break;
+          case turningMotorsPIDD:
+            //dev.log("received the value for turningMotorsPIDD $value");
+            setState(() {
+              turningMotorPIDD = value;
+              textEditingControllerTurnD.text = "$value";
+            });
+            break;
+          case driveMotorsPIDP:
+            //dev.log("received the value for driveMotorsPIDP $value");
+            setState(() {
+              driveMotorPIDP = value;
+              textEditingControllerDriveP.text = "$driveMotorPIDP";
+            });
+            break;
+          case driveMotorsPIDI:
+            //dev.log("received the value for driveMotorsPIDI $value");
+            setState(() {
+              driveMotorPIDI = value;
+              textEditingControllerDriveI.text = "$driveMotorPIDI";
+            });
+            break;
+          case driveMotorsPIDD:
+            //dev.log("received the value for driveMotorsPIDD $value");
+            setState(() {
+              driveMotorPIDD = value;
+              textEditingControllerDriveD.text = "$driveMotorPIDD";
+            });
+            break;
+          case fieldRobot:
+            //dev.log("received the value for fieldRobot $value");
 
-          dev.log("-------------> $val");
+            setState(() {
+              fieldRobotValues[0] = value[0];
+              fieldRobotValues[1] = value[1];
+              fieldRobotValues[2] = value[2];
+            });
 
-          setState(() {
-            //_cam1Processed = value[0].replaceFirst("mjpg:", "");
-            _cam1Processed = val.replaceFirst("mjpg:", "");
-          });
-          break;
-        case networkTablesPhotonVisionCamera2PublisherProcessed:
-          dev.log(
-              "networkTablesPhotonVisionCamera2PublisherProcessed: ${value[0]}");
+            break;
+          case ntPhotonVisionEstimator:
+            dev.log(
+                "-----------received the value for ntPhotonVisionEstimator $value");
 
-          String val = value[0];
-
-          if (val.contains(".local") && val.contains(":1188")) {
-            val = val.replaceRange(
-                val.indexOf("http"), val.indexOf(":1188"), "http://127.0.0.1");
-          } else if (val.contains(".local") && val.contains(":1184")) {
-            val = val.replaceRange(
-                val.indexOf("http"), val.indexOf(":1184"), "http://127.0.0.1");
-          }
-
-          dev.log("-------------> $val");
-
-          setState(() {
-            //_cam1Processed = value[0].replaceFirst("mjpg:", "");
-            _cam2Processed = val.replaceFirst("mjpg:", "");
-          });
-          break;
-        case networkTablesPhotonVisionCameraPublisherRaw:
-          dev.log("networkTablesPhotonVisionCameraPublisherRaw: ${value[0]}");
-
-          String val = value[0];
-
-          if (val.contains(".local") && val.contains("1187")) {
-            val = val.replaceRange(
-                val.indexOf("http"), val.indexOf(":1187"), "http://127.0.0.1");
-          } else if (val.contains(".local") && val.contains("1183")) {
-            val = val.replaceRange(
-                val.indexOf("http"), val.indexOf(":1183"), "http://127.0.0.1");
-          }
-
-          dev.log("-------------> $val");
-
-          setState(() {
-            //_cam1Raw = value[0].replaceFirst("mjpg:", "");
-            _cam1Raw = val.replaceFirst("mjpg:", "");
-          });
-          break;
-        case turningMotorsPIDP:
-          //dev.log("received the value for turningMotorsPIDP $value");
-          setState(() {
-            turningMotorPIDP = value;
-            textEditingControllerTurnP.text = "$turningMotorPIDP";
-          });
-          break;
-        case turningMotorsPIDI:
-          //dev.log("received the value for turningMotorsPIDI $value");
-          setState(() {
-            turningMotorPIDI = value;
-            textEditingControllerTurnI.text = "$value";
-          });
-          break;
-        case turningMotorsPIDD:
-          //dev.log("received the value for turningMotorsPIDD $value");
-          setState(() {
-            turningMotorPIDD = value;
-            textEditingControllerTurnD.text = "$value";
-          });
-          break;
-        case driveMotorsPIDP:
-          //dev.log("received the value for driveMotorsPIDP $value");
-          setState(() {
-            driveMotorPIDP = value;
-            textEditingControllerDriveP.text = "$driveMotorPIDP";
-          });
-          break;
-        case driveMotorsPIDI:
-          //dev.log("received the value for driveMotorsPIDI $value");
-          setState(() {
-            driveMotorPIDI = value;
-            textEditingControllerDriveI.text = "$driveMotorPIDI";
-          });
-          break;
-        case driveMotorsPIDD:
-          //dev.log("received the value for driveMotorsPIDD $value");
-          setState(() {
-            driveMotorPIDD = value;
-            textEditingControllerDriveD.text = "$driveMotorPIDD";
-          });
-          break;
-        case fieldRobot:
-          //dev.log("received the value for fieldRobot $value");
-
-          setState(() {
-            fieldRobotValues[0] = value[0];
-            fieldRobotValues[1] = value[1];
-            fieldRobotValues[2] = value[2];
-          });
-
-          break;
-        case ntPhotonVisionEstimator:
-          dev.log(
-              "-----------received the value for ntPhotonVisionEstimator $value");
-
-          /*setState(() {
+            /*setState(() {
               photonEstimatedValus = [
                 value[0] as double,
                 value[1] as double,
@@ -580,176 +572,179 @@ class _MyHomePageState extends State<MyHomePage> {
               ];
             });*/
 
-          break;
-        case networkTablesPhotonVisionCam1HasTargetPath:
-          //dev.log(
-          //"-----------received the value for networkTablesPhotonVisionCam1HasTargetPath $value");
-          setState(() {
-            _photonVisionCam1HasTarget = value;
-          });
-          break;
-        case networkTablesLimeLightVideoPath:
-          setState(() {
-            _limelightProcessed = value[0];
-          });
-          break;
-        case networkTablesPhotonVisionEnableCam1:
-          // _photonVisionEnableCam1 = value;
-          //dev.log("networkTablesPhotonVisionEnableCam1: $value");
-          setState(() {
-            _photonVisionEnableCam1 = value;
-          });
-          break;
-        case networkTablesPhotonVisionEnableCam2:
-          // _photonVisionEnableCam2 = value;
-          //dev.log("networkTablesPhotonVisionEnableCam2: $value");
-          setState(() {
-            _photonVisionEnableCam2 = value;
-          });
-          break;
-        case shooterHasTarget:
-          setState(() {
-            _shooterHasTarget = value;
-          });
-          break;
-        case robotStatus:
-          _robotStatus = value;
-          break;
-        case ntAutoDriveP:
-          setState(() {
-            autoDriveMotorPIDP = value;
-            textEditingControllerAutoDriveP.text = "$autoDriveMotorPIDP";
-          });
-          break;
-        case ntAutoDriveI:
-          setState(() {
-            autoDriveMotorPIDI = value;
-            textEditingControllerAutoDriveI.text = "$autoDriveMotorPIDI";
-          });
-          break;
-        case ntAutoDriveD:
-          setState(() {
-            autoDriveMotorPIDD = value;
-            textEditingControllerAutoDriveD.text = "$autoDriveMotorPIDD";
-          });
-          break;
-        case ntAutoTurnP:
-          setState(() {
-            autoTurnPIDP = value;
-            textEditingControllerAutoTurnP.text = "$autoTurnPIDP";
-          });
-          break;
-        case ntAutoTurnI:
-          setState(() {
-            autoTurnPIDI = value;
-            textEditingControllerAutoTurnI.text = "$autoTurnPIDI";
-          });
-          break;
-        case ntAutoTurnD:
-          setState(() {
-            autoTurnPIDD = value;
-            textEditingControllerAutoTurnD.text = "$autoTurnPIDD";
-          });
-          break;
-        case ntPhotonVisionCam1XOffset:
-          setState(() {
-            _photonVisionCam1XOffset = value;
-            textEditingControllerCamera1X.text = "$_photonVisionCam1XOffset";
-          });
-          break;
-        case ntPhotonVisionCam1YOffset:
-          setState(() {
-            _photonVisionCam1YOffset = value;
-            textEditingControllerCamera1Y.text = "$_photonVisionCam1YOffset";
-          });
-          break;
-        case ntPhotonVisionCam1Height:
-          setState(() {
-            _photonVisionCam1Height = value;
-            textEditingControllerCamera1Height.text =
-                "$_photonVisionCam1Height";
-          });
-          break;
-        case ntPhotonVisionCam1Rotation:
-          setState(() {
-            _photonVisionCam1Rotation = value;
-            textEditingControllerCamera1Rotation.text =
-                "$_photonVisionCam1Rotation";
-          });
-          break;
-        case ntPhotonVisionCam2XOffset:
-          setState(() {
-            _photonVisionCam2XOffset = value;
-            textEditingControllerCamera2X.text = "$_photonVisionCam2XOffset";
-          });
-          break;
-        case ntPhotonVisionCam2YOffset:
-          setState(() {
-            _photonVisionCam2YOffset = value;
-            textEditingControllerCamera2Y.text = "$_photonVisionCam2YOffset";
-          });
-          break;
-        case ntPhotonVisionCam2Height:
-          setState(() {
-            _photonVisionCam2Height = value;
-            textEditingControllerCamera2Height.text =
-                "$_photonVisionCam2Height";
-          });
-          break;
-        case ntPhotonVisionCam2Rotation:
-          setState(() {
-            _photonVisionCam2Rotation = value;
-            textEditingControllerCamera2Rotation.text =
-                "$_photonVisionCam2Rotation";
-          });
-          break;
-        case ntShooterP:
-          setState(() {
-            _shooterP = value;
-            textEditingControllerShooterP.text = "$_shooterP";
-          });
-          break;
-        case ntShooterI:
-          setState(() {
-            _shooterI = value;
-            textEditingControllerShooterI.text = "$_shooterI";
-          });
-          break;
-        case ntShooterD:
-          setState(() {
-            _shooterD = value;
-            textEditingControllerShooterD.text = "$_shooterD";
-          });
-          break;
-        case ntHoodP:
-          setState(() {
-            _hoodP = value;
-            textEditingControllerHoodP.text = "$_hoodP";
-          });
-          break;
-        case ntHoodI:
-          setState(() {
-            _hoodI = value;
-            textEditingControllerHoodI.text = "$_hoodI";
-          });
-          break;
-        case ntHoodD:
-          setState(() {
-            _hoodD = value;
-            textEditingControllerHoodD.text = "$_hoodD";
-          });
-          break;
-        default:
-          dev.log("dont know what $name is");
-      }
-    }, onError: (errorString) {
-      dev.log(errorString);
-    }, onDisconnected: () {
-      dev.log("Disconnected called");
-      setState(() {
-        _connected = false;
-      });
-    },);
+            break;
+          case networkTablesPhotonVisionCam1HasTargetPath:
+            //dev.log(
+            //"-----------received the value for networkTablesPhotonVisionCam1HasTargetPath $value");
+            setState(() {
+              _photonVisionCam1HasTarget = value;
+            });
+            break;
+          case networkTablesLimeLightVideoPath:
+            setState(() {
+              _limelightProcessed = value[0];
+            });
+            break;
+          case networkTablesPhotonVisionEnableCam1:
+            // _photonVisionEnableCam1 = value;
+            //dev.log("networkTablesPhotonVisionEnableCam1: $value");
+            setState(() {
+              _photonVisionEnableCam1 = value;
+            });
+            break;
+          case networkTablesPhotonVisionEnableCam2:
+            // _photonVisionEnableCam2 = value;
+            //dev.log("networkTablesPhotonVisionEnableCam2: $value");
+            setState(() {
+              _photonVisionEnableCam2 = value;
+            });
+            break;
+          case shooterHasTarget:
+            setState(() {
+              _shooterHasTarget = value;
+            });
+            break;
+          case robotStatus:
+            _robotStatus = value;
+            break;
+          case ntAutoDriveP:
+            setState(() {
+              autoDriveMotorPIDP = value;
+              textEditingControllerAutoDriveP.text = "$autoDriveMotorPIDP";
+            });
+            break;
+          case ntAutoDriveI:
+            setState(() {
+              autoDriveMotorPIDI = value;
+              textEditingControllerAutoDriveI.text = "$autoDriveMotorPIDI";
+            });
+            break;
+          case ntAutoDriveD:
+            setState(() {
+              autoDriveMotorPIDD = value;
+              textEditingControllerAutoDriveD.text = "$autoDriveMotorPIDD";
+            });
+            break;
+          case ntAutoTurnP:
+            setState(() {
+              autoTurnPIDP = value;
+              textEditingControllerAutoTurnP.text = "$autoTurnPIDP";
+            });
+            break;
+          case ntAutoTurnI:
+            setState(() {
+              autoTurnPIDI = value;
+              textEditingControllerAutoTurnI.text = "$autoTurnPIDI";
+            });
+            break;
+          case ntAutoTurnD:
+            setState(() {
+              autoTurnPIDD = value;
+              textEditingControllerAutoTurnD.text = "$autoTurnPIDD";
+            });
+            break;
+          case ntPhotonVisionCam1XOffset:
+            setState(() {
+              _photonVisionCam1XOffset = value;
+              textEditingControllerCamera1X.text = "$_photonVisionCam1XOffset";
+            });
+            break;
+          case ntPhotonVisionCam1YOffset:
+            setState(() {
+              _photonVisionCam1YOffset = value;
+              textEditingControllerCamera1Y.text = "$_photonVisionCam1YOffset";
+            });
+            break;
+          case ntPhotonVisionCam1Height:
+            setState(() {
+              _photonVisionCam1Height = value;
+              textEditingControllerCamera1Height.text =
+                  "$_photonVisionCam1Height";
+            });
+            break;
+          case ntPhotonVisionCam1Rotation:
+            setState(() {
+              _photonVisionCam1Rotation = value;
+              textEditingControllerCamera1Rotation.text =
+                  "$_photonVisionCam1Rotation";
+            });
+            break;
+          case ntPhotonVisionCam2XOffset:
+            setState(() {
+              _photonVisionCam2XOffset = value;
+              textEditingControllerCamera2X.text = "$_photonVisionCam2XOffset";
+            });
+            break;
+          case ntPhotonVisionCam2YOffset:
+            setState(() {
+              _photonVisionCam2YOffset = value;
+              textEditingControllerCamera2Y.text = "$_photonVisionCam2YOffset";
+            });
+            break;
+          case ntPhotonVisionCam2Height:
+            setState(() {
+              _photonVisionCam2Height = value;
+              textEditingControllerCamera2Height.text =
+                  "$_photonVisionCam2Height";
+            });
+            break;
+          case ntPhotonVisionCam2Rotation:
+            setState(() {
+              _photonVisionCam2Rotation = value;
+              textEditingControllerCamera2Rotation.text =
+                  "$_photonVisionCam2Rotation";
+            });
+            break;
+          case ntShooterP:
+            setState(() {
+              _shooterP = value;
+              textEditingControllerShooterP.text = "$_shooterP";
+            });
+            break;
+          case ntShooterI:
+            setState(() {
+              _shooterI = value;
+              textEditingControllerShooterI.text = "$_shooterI";
+            });
+            break;
+          case ntShooterD:
+            setState(() {
+              _shooterD = value;
+              textEditingControllerShooterD.text = "$_shooterD";
+            });
+            break;
+          case ntHoodP:
+            setState(() {
+              _hoodP = value;
+              textEditingControllerHoodP.text = "$_hoodP";
+            });
+            break;
+          case ntHoodI:
+            setState(() {
+              _hoodI = value;
+              textEditingControllerHoodI.text = "$_hoodI";
+            });
+            break;
+          case ntHoodD:
+            setState(() {
+              _hoodD = value;
+              textEditingControllerHoodD.text = "$_hoodD";
+            });
+            break;
+          default:
+            dev.log("dont know what $name is");
+        }
+      },
+      onError: (errorString) {
+        dev.log(errorString);
+      },
+      onDisconnected: () {
+        dev.log("Disconnected called");
+        setState(() {
+          _connected = false;
+        });
+      },
+    );
 
     _network_tables41.connect();
   }
@@ -763,17 +758,33 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    _networkInfo = NetworkInfo();
 
+    loadConfigAndConnect();
+  }
+
+  Future<void> loadConfigAndConnect() async {
+    await loadConfig();
     connect();
   }
 
-  Future<List<InternetAddress>> getLocalHostName() async {
-    return await InternetAddress.lookup(Platform.localHostname);
+  Future<void> loadConfig() async {
+    _localAddress = await getLocalHostAddress();
+    String response = await rootBundle.loadString('config.yaml');
+    var yaml = await loadYaml(response);
+
+    setState(() {
+      _config = Config.fromYAML(yaml);
+      _textEditingControllerRobotIP.text = _config.robotIPAddress;
+    });
+  }
+
+  Future<String> getLocalHostAddress() async {
+    return await _networkInfo.getWifiIP() ?? "";
   }
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       theme: Theme.of(context),
       home: DefaultTabController(
@@ -797,8 +808,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             title: Text(
               (_alliance == Alliance.red)
-                  ? "${_config.robotIPAddress} Red Alliance Station ${_stationNumber.round()} connected: $_connected enabled: $_enabled my address: ${_addresses.isNotEmpty ? _addresses[3].address.toString() : 'No address'}"
-                  : "${_config.robotIPAddress} Blue Alliance Station ${_stationNumber.round()} connected: $_connected enabled: $_enabled my address:${_addresses.isNotEmpty ? _addresses[3].address.toString() : 'No address'}",
+                  ? "${_config.robotIPAddress} Red Alliance Station $_stationNumber connected: $_connected enabled: $_enabled my address: $_localAddress"
+                  : "${_config.robotIPAddress} Blue Alliance Station $_stationNumber connected: $_connected enabled: $_enabled my address: $_localAddress",
               style: TextStyle(
                 color: (_alliance == Alliance.red) ? Colors.red : Colors.blue,
               ),
@@ -942,7 +953,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
     } catch (e) {
-      dev.log("problem with int.parse, it is ${textEditingControllerTime.text}");
+      dev.log(
+          "problem with int.parse, it is ${textEditingControllerTime.text}");
     }
 
     return Container();
@@ -1105,16 +1117,50 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget drawReconnectScreen() {
     return Container(
+      padding: const EdgeInsets.all(20.0),
       color: Theme.of(context).colorScheme.primary,
-      child: Center(
-        child: TextButton(
-          style: Theme.of(context).textButtonTheme.style,
-          onPressed: () {
-            //_networkTables.connectBot();
-            connect();
-          },
-          child: (_addresses.isNotEmpty) ? Text("Reconnect to ${_config.robotIPAddress} my address is: ${_addresses[3].address.toString()}") : Text("Reconnect to ${_config.robotIPAddress}"),
-        ),
+      child: Column(
+        spacing: 10.0,
+        children: [
+          Row(
+            spacing: 10.0,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 150,
+                child: TextField(
+                  readOnly: false,
+                  cursorColor: Colors.white,
+                  controller: _textEditingControllerRobotIP,
+                  decoration: const InputDecoration(
+                    labelText: "Robot IP",
+                    border: OutlineInputBorder(),
+                  ),
+                  onSubmitted: (value) {
+                    setState(() {
+                      _config.robotIPAddress = value;
+                      _textEditingControllerRobotIP.text = value;
+                    });
+                  },
+                ),
+              ),
+              Text("Local address: $_localAddress"),
+            ],
+            /**/
+          ),
+          TextButton(
+              //style: Theme.of(context).textButtonTheme.style,
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Theme.of(context).textTheme.bodyLarge?.color,
+              ),
+              onPressed: () {
+                //_networkTables.connectBot();
+
+                connect();
+              },
+              child: Text("Reconnect"))
+        ],
       ),
     );
   }
@@ -1127,8 +1173,12 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: [
             SingleChildScrollView(
+              child: Text("Robot IP: ${_config.robotIPAddress}"),
+            ),
+            SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   drawCamera1Settings(),
                   drawCamera2Settings(),

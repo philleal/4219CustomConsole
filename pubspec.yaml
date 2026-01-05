@@ -41,6 +41,7 @@ dependencies:
   #media_kit_libs_audio: ^1.0.5 # Native audio dependencies.
   yaml: ^3.1.2
   win32: ^5.8.0
+  network_info_plus: ^7.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
