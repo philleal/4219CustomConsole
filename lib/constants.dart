@@ -116,9 +116,9 @@ const String ntShooterD = "/Shuffleboard/Shooter/ShooterD";
 const String ntHoodP = "/Shuffleboard/Shooter/HoodP";
 const String ntHoodI = "/Shuffleboard/Shooter/HoodI";
 const String ntHoodD = "/Shuffleboard/Shooter/HoodD";
-const String ntTurretP = "/Shuffleboard/Shooter/HoodP";
-const String ntTurretI = "/Shuffleboard/Shooter/HoodI";
-const String ntTurretD = "/Shuffleboard/Shooter/HoodD";
+const String ntTurretP = "/Shuffleboard/Shooter/TurretP";
+const String ntTurretI = "/Shuffleboard/Shooter/TurretI";
+const String ntTurretD = "/Shuffleboard/Shooter/TurretD";
 
 const String robotStatus = "/SmartDashboard/Status";
 

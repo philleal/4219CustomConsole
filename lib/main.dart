@@ -10,6 +10,7 @@ import 'dart:developer' as dev;
 import 'package:network_tables_client/config.dart';
 import 'package:network_tables_client/constants.dart';
 import 'package:yaml/yaml.dart';
+import 'package:toastification/toastification.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -300,6 +301,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ntHoodP: "double",
       ntHoodI: "double",
       ntHoodD: "double",
+      ntTurretP: "double",
+      ntTurretI: "double",
+      ntTurretD: "double",
     };
 
     _network_tables41 = Network_Tables41(
@@ -360,6 +364,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ntHoodP,
         ntHoodI,
         ntHoodD,
+        ntTurretP,
+        ntTurretI,
+        ntTurretD,
       ],
       publications,
       onConnected: () {
@@ -731,18 +738,50 @@ class _MyHomePageState extends State<MyHomePage> {
               textEditingControllerHoodD.text = "$_hoodD";
             });
             break;
+          case ntTurretP:
+            setState(() {
+              _turretP = value;
+              textEditingControllerTurretP.text = "$_turretP";
+            });
+            break;
+          case ntTurretI:
+            setState(() {
+              _turretI = value;
+              textEditingControllerTurretI.text = "$_turretI";
+            });
+            break;
+          case ntTurretD:
+            setState(() {
+              _turretD = value;
+              textEditingControllerTurretD.text = "$_turretD";
+            });
+            break;
           default:
             dev.log("dont know what $name is");
         }
       },
       onError: (errorString) {
         dev.log(errorString);
+        toastification.show(
+          type: ToastificationType.error,
+          context: context, // optional if you use ToastificationWrapper
+          title:
+              Text("Unable to connect to robot at ${_config.robotIPAddress}"),
+          autoCloseDuration: const Duration(seconds: 5),
+        );
       },
       onDisconnected: () {
         dev.log("Disconnected called");
         setState(() {
           _connected = false;
         });
+
+        toastification.show(
+          type: ToastificationType.error,
+          context: context, // optional if you use ToastificationWrapper
+          title: Text("Discoonnected from ${_config.robotIPAddress}"),
+          autoCloseDuration: const Duration(seconds: 5),
+        );
       },
     );
 
@@ -837,73 +876,77 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    timeWidget(),
-                    Container(
-                      clipBehavior: Clip.hardEdge,
-                      padding: const EdgeInsets.all(20.0),
-                      constraints: const BoxConstraints(
-                        minWidth: 180.0,
-                        maxWidth: 180.0,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 2.0,
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    spacing: 30.0,
+                    children: [
+                      timeWidget(),
+                      Container(
+                        clipBehavior: Clip.hardEdge,
+                        padding: const EdgeInsets.all(20.0),
+                        constraints: const BoxConstraints(
+                          minWidth: 180.0,
+                          maxWidth: 180.0,
                         ),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                        dropdownColor: Colors.black,
-                        hint: const Text(defaultSelectedAutoString),
-                        value: (_selectedAuto.isEmpty)
-                            ? defaultSelectedAutoString
-                            : _selectedAuto,
-                        items: _autos
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2.0,
+                          ),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(5.0)),
+                        ),
+                        child: DropdownButton<String>(
+                          isExpanded: true,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          dropdownColor: Colors.black,
+                          hint: const Text(defaultSelectedAutoString),
+                          value: (_selectedAuto.isEmpty)
+                              ? defaultSelectedAutoString
+                              : _selectedAuto,
+                          items: _autos
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (String? value) async {
+                            // Notify network tables of the change
+                            _network_tables41.setProperty(
+                              networkTablesSelectAuto,
                               value,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (String? value) async {
-                          // Notify network tables of the change
-                          _network_tables41.setProperty(
-                            networkTablesSelectAuto,
-                            value,
-                          );
+                            );
 
-                          setState(() {
-                            _selectedAuto = value!;
-                          });
-                        },
+                            setState(() {
+                              _selectedAuto = value!;
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                    batteryWidget(),
-                    hasTargetWidget(),
-                    robotStatusWidget(),
-                    Text(
-                      "FMSAttached",
-                      style: TextStyle(
-                          color: (_fmsAttached) ? Colors.green : Colors.red),
-                    ),
-                    Text(
-                      "DSAttached",
-                      style: TextStyle(
-                          color: (_dsAttached) ? Colors.green : Colors.red),
-                    ),
-                    Text(
-                      "Total Power $totalPower",
-                    ),
-                  ],
+                      batteryWidget(),
+                      hasTargetWidget(),
+                      robotStatusWidget(),
+                      Text(
+                        "FMSAttached",
+                        style: TextStyle(
+                            color: (_fmsAttached) ? Colors.green : Colors.red),
+                      ),
+                      Text(
+                        "DSAttached",
+                        style: TextStyle(
+                            color: (_dsAttached) ? Colors.green : Colors.red),
+                      ),
+                      Text(
+                        "Total Power $totalPower",
+                      ),
+                    ],
+                  ),
                 ),
                 drawCameraFeeds(),
                 fieldWidget(),
@@ -2800,7 +2843,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         errorBorder: InputBorder.none,
                         disabledBorder: InputBorder.none,
                       ),
-                      controller: textEditingControllerHoodP,
+                      controller: textEditingControllerTurretP,
                       keyboardType: TextInputType.number,
                       cursorColor: Colors.white,
                       showCursor: true,
@@ -2808,14 +2851,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         double? newValue = double.tryParse(value);
 
                         if (newValue == null) {
-                          textEditingControllerHoodP.text = "$_hoodP";
+                          textEditingControllerTurretP.text = "$_turretP";
                         } else {
-                          textEditingControllerHoodP.text = "$newValue";
-                          _hoodP = newValue;
+                          textEditingControllerTurretP.text = "$newValue";
+                          _turretP = newValue;
 
                           _network_tables41.setProperty(
-                            ntHoodP,
-                            _hoodP,
+                            ntTurretP,
+                            _turretP,
                           );
                         }
                       },
@@ -2839,7 +2882,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         errorBorder: InputBorder.none,
                         disabledBorder: InputBorder.none,
                       ),
-                      controller: textEditingControllerHoodI,
+                      controller: textEditingControllerTurretI,
                       keyboardType: TextInputType.number,
                       cursorColor: Colors.white,
                       showCursor: true,
@@ -2847,14 +2890,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         double? newValue = double.tryParse(value);
 
                         if (newValue == null) {
-                          textEditingControllerHoodI.text = "$_hoodI";
+                          textEditingControllerTurretI.text = "$_turretI";
                         } else {
-                          textEditingControllerHoodI.text = "$newValue";
-                          _hoodI = newValue;
+                          textEditingControllerTurretI.text = "$newValue";
+                          _turretI = newValue;
 
                           _network_tables41.setProperty(
-                            ntHoodI,
-                            _hoodI,
+                            ntTurretI,
+                            _turretI,
                           );
                         }
                       },
@@ -2878,7 +2921,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         errorBorder: InputBorder.none,
                         disabledBorder: InputBorder.none,
                       ),
-                      controller: textEditingControllerHoodD,
+                      controller: textEditingControllerTurretD,
                       keyboardType: TextInputType.number,
                       cursorColor: Colors.white,
                       showCursor: true,
@@ -2886,14 +2929,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         double? newValue = double.tryParse(value);
 
                         if (newValue == null) {
-                          textEditingControllerHoodD.text = "$_hoodD";
+                          textEditingControllerTurretD.text = "$_turretD";
                         } else {
-                          textEditingControllerHoodD.text = "$newValue";
-                          _hoodD = newValue;
+                          textEditingControllerTurretD.text = "$newValue";
+                          _turretD = newValue;
 
                           _network_tables41.setProperty(
-                            ntHoodD,
-                            _hoodD,
+                            ntTurretD,
+                            _turretD,
                           );
                         }
                       },
