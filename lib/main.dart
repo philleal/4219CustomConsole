@@ -753,7 +753,7 @@ class _MyHomePageState extends State<MyHomePage> {
           case ntTurretD:
             setState(() {
               _turretD = value;
-              textEditingControllerTurretD.text = "$_turretD";
+              textEditingControllerHoodD.text = "$_hoodD";
             });
             break;
           default:
@@ -1612,34 +1612,42 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Container(
-            height: 250,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-              border: Border.all(
-                color: Colors.white,
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 0.0),
-                  child: Text(
-                    "Drive PID",
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
+          child: SizedBox(
+            width: 175,
+            height: 200,
+            // decoration: BoxDecoration(
+            //   borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+            //   border: Border.all(
+            //     color: Colors.white,
+            //   ),
+            // ),
+            child: InputDecorator(
+              decoration: InputDecoration(
+                labelText: 'Drive PID',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
                 ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        "P: ",
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  /*Padding(
+                    padding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 0.0),
+                    child: Text(
+                      "Drive PID",
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
-                    /*Slider(
+                  ),*/
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          "P: ",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                      /*Slider(
                       max: 10.0,
                       activeColor:
                           Theme.of(context).sliderTheme.activeTrackColor,
@@ -1655,53 +1663,54 @@ class _MyHomePageState extends State<MyHomePage> {
                         });
                       },
                     ),*/
-                    /*Padding(
+                      /*Padding(
                       padding: const EdgeInsets.only(right: 10.0),
                       child: Text(
                         driveMotorPIDP.toStringAsFixed(2),
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),*/
-                    TextField(
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        //focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                      controller: textEditingControllerDriveP,
-                      keyboardType: TextInputType.number,
-                      cursorColor: Colors.white,
-                      showCursor: true,
-                      onSubmitted: (value) {
-                        double? newValue = double.tryParse(value);
+                      TextField(
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          //focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                        ),
+                        controller: textEditingControllerDriveP,
+                        keyboardType: TextInputType.number,
+                        cursorColor: Colors.white,
+                        showCursor: true,
+                        onSubmitted: (value) {
+                          double? newValue = double.tryParse(value);
 
-                        if (newValue == null) {
-                          textEditingControllerDriveP.text = "$driveMotorPIDP";
-                        } else {
-                          textEditingControllerDriveP.text = "$newValue";
-                          driveMotorPIDP = newValue;
+                          if (newValue == null) {
+                            textEditingControllerDriveP.text =
+                                "$driveMotorPIDP";
+                          } else {
+                            textEditingControllerDriveP.text = "$newValue";
+                            driveMotorPIDP = newValue;
 
-                          _network_tables41.setProperty(
-                            driveMotorsPIDP,
-                            driveMotorPIDP,
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        "I: ",
-                        style: Theme.of(context).textTheme.bodyLarge,
+                            _network_tables41.setProperty(
+                              driveMotorsPIDP,
+                              driveMotorPIDP,
+                            );
+                          }
+                        },
                       ),
-                    ),
-                    /*Slider(
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          "I: ",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                      /*Slider(
                       max: 10.0,
                       activeColor:
                           Theme.of(context).sliderTheme.activeTrackColor,
@@ -1717,53 +1726,54 @@ class _MyHomePageState extends State<MyHomePage> {
                         });
                       },
                     ),*/
-                    /*Padding(
+                      /*Padding(
                       padding: const EdgeInsets.only(right: 10.0),
                       child: Text(
                         driveMotorPIDI.toStringAsFixed(2),
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),*/
-                    TextField(
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        //focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                      controller: textEditingControllerDriveI,
-                      keyboardType: TextInputType.number,
-                      cursorColor: Colors.white,
-                      showCursor: true,
-                      onSubmitted: (value) {
-                        double? newValue = double.tryParse(value);
+                      TextField(
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          //focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                        ),
+                        controller: textEditingControllerDriveI,
+                        keyboardType: TextInputType.number,
+                        cursorColor: Colors.white,
+                        showCursor: true,
+                        onSubmitted: (value) {
+                          double? newValue = double.tryParse(value);
 
-                        if (newValue == null) {
-                          textEditingControllerDriveI.text = "$driveMotorPIDI";
-                        } else {
-                          textEditingControllerDriveI.text = "$newValue";
-                          driveMotorPIDI = newValue;
+                          if (newValue == null) {
+                            textEditingControllerDriveI.text =
+                                "$driveMotorPIDI";
+                          } else {
+                            textEditingControllerDriveI.text = "$newValue";
+                            driveMotorPIDI = newValue;
 
-                          _network_tables41.setProperty(
-                            driveMotorsPIDI,
-                            driveMotorPIDI,
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        "D: ",
-                        style: Theme.of(context).textTheme.bodyLarge,
+                            _network_tables41.setProperty(
+                              driveMotorsPIDI,
+                              driveMotorPIDI,
+                            );
+                          }
+                        },
                       ),
-                    ),
-                    /*Slider(
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          "D: ",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                      /*Slider(
                       max: 10.0,
                       activeColor:
                           Theme.of(context).sliderTheme.activeTrackColor,
@@ -1779,44 +1789,46 @@ class _MyHomePageState extends State<MyHomePage> {
                         });
                       },
                     ),*/
-                    /*Padding(
+                      /*Padding(
                       padding: const EdgeInsets.only(right: 10.0),
                       child: Text(
                         driveMotorPIDD.toStringAsFixed(2),
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),*/
-                    TextField(
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        //focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
+                      TextField(
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          //focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                        ),
+                        controller: textEditingControllerDriveD,
+                        keyboardType: TextInputType.number,
+                        cursorColor: Colors.white,
+                        showCursor: true,
+                        onSubmitted: (value) {
+                          double? newValue = double.tryParse(value);
+
+                          if (newValue == null) {
+                            textEditingControllerDriveD.text =
+                                "$driveMotorPIDD";
+                          } else {
+                            textEditingControllerDriveD.text = "$newValue";
+                            driveMotorPIDD = newValue;
+
+                            _network_tables41.setProperty(
+                              driveMotorsPIDD,
+                              driveMotorPIDD,
+                            );
+                          }
+                        },
                       ),
-                      controller: textEditingControllerDriveD,
-                      keyboardType: TextInputType.number,
-                      cursorColor: Colors.white,
-                      showCursor: true,
-                      onSubmitted: (value) {
-                        double? newValue = double.tryParse(value);
-
-                        if (newValue == null) {
-                          textEditingControllerDriveD.text = "$driveMotorPIDD";
-                        } else {
-                          textEditingControllerDriveD.text = "$newValue";
-                          driveMotorPIDD = newValue;
-
-                          _network_tables41.setProperty(
-                            driveMotorsPIDD,
-                            driveMotorPIDD,
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -1829,145 +1841,154 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Container(
-            height: 250,
-            decoration: BoxDecoration(
+          child: SizedBox(
+            height: 200,
+            width: 175,
+            /*decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(15.0)),
               border: Border.all(
                 color: Colors.white,
               ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 0.0),
-                  child: Text(
-                    "Auto Drive PID",
-                    style: Theme.of(context).textTheme.bodyLarge,
+            ),*/
+            child: InputDecorator(
+              decoration: InputDecoration(
+                labelText: 'Auto Drive PID',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  /*Padding(
+                    padding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 0.0),
+                    child: Text(
+                      "Auto Drive PID",
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ),*/
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          "P: ",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                      TextField(
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          //focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                        ),
+                        controller: textEditingControllerAutoDriveP,
+                        keyboardType: TextInputType.number,
+                        cursorColor: Colors.white,
+                        showCursor: true,
+                        onSubmitted: (value) {
+                          double? newValue = double.tryParse(value);
+
+                          if (newValue == null) {
+                            textEditingControllerAutoDriveP.text =
+                                "$autoDriveMotorPIDP";
+                          } else {
+                            textEditingControllerAutoDriveP.text = "$newValue";
+                            autoDriveMotorPIDP = newValue;
+
+                            _network_tables41.setProperty(
+                              ntAutoDriveP,
+                              autoDriveMotorPIDP,
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        "P: ",
-                        style: Theme.of(context).textTheme.bodyLarge,
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          "I: ",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
                       ),
-                    ),
-                    TextField(
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        //focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
+                      TextField(
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          //focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                        ),
+                        controller: textEditingControllerAutoDriveI,
+                        keyboardType: TextInputType.number,
+                        cursorColor: Colors.white,
+                        showCursor: true,
+                        onSubmitted: (value) {
+                          double? newValue = double.tryParse(value);
+
+                          if (newValue == null) {
+                            textEditingControllerDriveI.text =
+                                "$autoDriveMotorPIDI";
+                          } else {
+                            textEditingControllerAutoDriveI.text = "$newValue";
+                            autoDriveMotorPIDI = newValue;
+
+                            _network_tables41.setProperty(
+                              ntAutoDriveI,
+                              autoDriveMotorPIDI,
+                            );
+                          }
+                        },
                       ),
-                      controller: textEditingControllerAutoDriveP,
-                      keyboardType: TextInputType.number,
-                      cursorColor: Colors.white,
-                      showCursor: true,
-                      onSubmitted: (value) {
-                        double? newValue = double.tryParse(value);
-
-                        if (newValue == null) {
-                          textEditingControllerAutoDriveP.text =
-                              "$autoDriveMotorPIDP";
-                        } else {
-                          textEditingControllerAutoDriveP.text = "$newValue";
-                          autoDriveMotorPIDP = newValue;
-
-                          _network_tables41.setProperty(
-                            ntAutoDriveP,
-                            autoDriveMotorPIDP,
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        "I: ",
-                        style: Theme.of(context).textTheme.bodyLarge,
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          "D: ",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
                       ),
-                    ),
-                    TextField(
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        //focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
+                      TextField(
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          //focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                        ),
+                        controller: textEditingControllerAutoDriveD,
+                        keyboardType: TextInputType.number,
+                        cursorColor: Colors.white,
+                        showCursor: true,
+                        onSubmitted: (value) {
+                          double? newValue = double.tryParse(value);
+
+                          if (newValue == null) {
+                            textEditingControllerDriveD.text =
+                                "$autoDriveMotorPIDD";
+                          } else {
+                            textEditingControllerAutoDriveD.text = "$newValue";
+                            autoDriveMotorPIDD = newValue;
+
+                            _network_tables41.setProperty(
+                              ntAutoDriveD,
+                              autoDriveMotorPIDD,
+                            );
+                          }
+                        },
                       ),
-                      controller: textEditingControllerAutoDriveI,
-                      keyboardType: TextInputType.number,
-                      cursorColor: Colors.white,
-                      showCursor: true,
-                      onSubmitted: (value) {
-                        double? newValue = double.tryParse(value);
-
-                        if (newValue == null) {
-                          textEditingControllerDriveI.text =
-                              "$autoDriveMotorPIDI";
-                        } else {
-                          textEditingControllerAutoDriveI.text = "$newValue";
-                          autoDriveMotorPIDI = newValue;
-
-                          _network_tables41.setProperty(
-                            ntAutoDriveI,
-                            autoDriveMotorPIDI,
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        "D: ",
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ),
-                    TextField(
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        //focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                      controller: textEditingControllerAutoDriveD,
-                      keyboardType: TextInputType.number,
-                      cursorColor: Colors.white,
-                      showCursor: true,
-                      onSubmitted: (value) {
-                        double? newValue = double.tryParse(value);
-
-                        if (newValue == null) {
-                          textEditingControllerDriveD.text =
-                              "$autoDriveMotorPIDD";
-                        } else {
-                          textEditingControllerAutoDriveD.text = "$newValue";
-                          autoDriveMotorPIDD = newValue;
-
-                          _network_tables41.setProperty(
-                            ntAutoDriveD,
-                            autoDriveMotorPIDD,
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -1980,142 +2001,152 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Container(
-            height: 250,
-            decoration: BoxDecoration(
+          child: SizedBox(
+            height: 200,
+            width: 175,
+            /*decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(15.0)),
               border: Border.all(
                 color: Colors.white,
               ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 0.0),
-                  child: Text(
-                    "Auto Turn PID",
-                    style: Theme.of(context).textTheme.bodyLarge,
+            ),*/
+            child: InputDecorator(
+              decoration: InputDecoration(
+                labelText: 'Auto Turn PID',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  /*Padding(
+                    padding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 0.0),
+                    child: Text(
+                      "Auto Turn PID",
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ),*/
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          "P: ",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                      TextField(
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          //focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                        ),
+                        controller: textEditingControllerAutoTurnP,
+                        keyboardType: TextInputType.number,
+                        cursorColor: Colors.white,
+                        showCursor: true,
+                        onSubmitted: (value) {
+                          double? newValue = double.tryParse(value);
+
+                          if (newValue == null) {
+                            textEditingControllerAutoTurnP.text =
+                                "$autoTurnPIDP";
+                          } else {
+                            textEditingControllerAutoTurnP.text = "$newValue";
+                            autoTurnPIDP = newValue;
+
+                            _network_tables41.setProperty(
+                              ntAutoTurnP,
+                              autoTurnPIDP,
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        "P: ",
-                        style: Theme.of(context).textTheme.bodyLarge,
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          "I: ",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
                       ),
-                    ),
-                    TextField(
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        //focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
+                      TextField(
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          //focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                        ),
+                        controller: textEditingControllerAutoTurnI,
+                        keyboardType: TextInputType.number,
+                        cursorColor: Colors.white,
+                        showCursor: true,
+                        onSubmitted: (value) {
+                          double? newValue = double.tryParse(value);
+
+                          if (newValue == null) {
+                            textEditingControllerTurnI.text = "$autoTurnPIDI";
+                          } else {
+                            textEditingControllerAutoTurnI.text = "$newValue";
+                            autoTurnPIDI = newValue;
+
+                            _network_tables41.setProperty(
+                              ntAutoTurnI,
+                              autoTurnPIDI,
+                            );
+                          }
+                        },
                       ),
-                      controller: textEditingControllerAutoTurnP,
-                      keyboardType: TextInputType.number,
-                      cursorColor: Colors.white,
-                      showCursor: true,
-                      onSubmitted: (value) {
-                        double? newValue = double.tryParse(value);
-
-                        if (newValue == null) {
-                          textEditingControllerAutoTurnP.text = "$autoTurnPIDP";
-                        } else {
-                          textEditingControllerAutoTurnP.text = "$newValue";
-                          autoTurnPIDP = newValue;
-
-                          _network_tables41.setProperty(
-                            ntAutoTurnP,
-                            autoTurnPIDP,
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        "I: ",
-                        style: Theme.of(context).textTheme.bodyLarge,
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          "D: ",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
                       ),
-                    ),
-                    TextField(
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        //focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
+                      TextField(
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          //focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                        ),
+                        controller: textEditingControllerAutoTurnD,
+                        keyboardType: TextInputType.number,
+                        cursorColor: Colors.white,
+                        showCursor: true,
+                        onSubmitted: (value) {
+                          double? newValue = double.tryParse(value);
+
+                          if (newValue == null) {
+                            textEditingControllerTurnD.text = "$autoTurnPIDD";
+                          } else {
+                            textEditingControllerAutoTurnD.text = "$newValue";
+                            autoTurnPIDD = newValue;
+
+                            _network_tables41.setProperty(
+                              ntAutoTurnD,
+                              autoTurnPIDD,
+                            );
+                          }
+                        },
                       ),
-                      controller: textEditingControllerAutoTurnI,
-                      keyboardType: TextInputType.number,
-                      cursorColor: Colors.white,
-                      showCursor: true,
-                      onSubmitted: (value) {
-                        double? newValue = double.tryParse(value);
-
-                        if (newValue == null) {
-                          textEditingControllerTurnI.text = "$autoTurnPIDI";
-                        } else {
-                          textEditingControllerAutoTurnI.text = "$newValue";
-                          autoTurnPIDI = newValue;
-
-                          _network_tables41.setProperty(
-                            ntAutoTurnI,
-                            autoTurnPIDI,
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        "D: ",
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ),
-                    TextField(
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        //focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                      controller: textEditingControllerAutoTurnD,
-                      keyboardType: TextInputType.number,
-                      cursorColor: Colors.white,
-                      showCursor: true,
-                      onSubmitted: (value) {
-                        double? newValue = double.tryParse(value);
-
-                        if (newValue == null) {
-                          textEditingControllerTurnD.text = "$autoTurnPIDD";
-                        } else {
-                          textEditingControllerAutoTurnD.text = "$newValue";
-                          autoTurnPIDD = newValue;
-
-                          _network_tables41.setProperty(
-                            ntAutoTurnD,
-                            autoTurnPIDD,
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
